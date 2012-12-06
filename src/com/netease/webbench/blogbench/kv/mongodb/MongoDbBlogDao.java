@@ -100,15 +100,18 @@ public class MongoDbBlogDao implements BlogDAO {
 		BasicDBObject searchQuery = new BasicDBObject();
 		searchQuery.put(UID_FIELD, uId);
 		DBCursor cursor = collection.find(searchQuery).sort(
-				new BasicDBObject(PTIME_FIELD, 1)).limit(10);
-		
-		List<Long> list = new ArrayList<Long>();
-		while (cursor.hasNext()) {
-			Long id = Long.parseLong((String)cursor.next().get(ID_FIELD));
-			list.add(id);
+				new BasicDBObject(PTIME_FIELD, 1)).limit(10);		
+		try {
+			List<Long> list = new ArrayList<Long>();
+			while (cursor.hasNext()) {
+				Long id = Long.parseLong((String)cursor.next().get(ID_FIELD));
+				list.add(id);
+			}
+			cursor.close();
+			return list;
+		} finally {
+			cursor.close();
 		}
-		cursor.close();
-		return list;
 	}
 	
 	private BlogIdWithTitle getSibling(long uId, long time, boolean pre) {
@@ -119,14 +122,17 @@ public class MongoDbBlogDao implements BlogDAO {
 				time).get());	
 		DBCursor cursor = collection.find(searchQuery).sort(
 				new BasicDBObject(PTIME_FIELD, 1)).limit(1);
-		if (cursor.hasNext()) {
-			DBObject o = cursor.next();
-			long id = Long.parseLong((String)o.get(ID_FIELD));
-			String title = (String)o.get(TITLE_FIELD);
-			return new BlogIdWithTitle(id, uId, title);
+		try {
+			if (cursor.hasNext()) {
+				DBObject o = cursor.next();
+				long id = Long.parseLong((String)o.get(ID_FIELD));
+				String title = (String)o.get(TITLE_FIELD);
+				return new BlogIdWithTitle(id, uId, title);
+			}		
+			return null;
+		} finally {
+			cursor.close();
 		}
-		cursor.close();
-		return null;
 	}
 
 	@Override
@@ -141,18 +147,21 @@ public class MongoDbBlogDao implements BlogDAO {
 				selBlogNums());
 		BasicDBObject searchQuery = new BasicDBObject();
 		searchQuery.put(ID_FIELD, "*");
-		DBCursor cursor = collection.find(searchQuery);
- 
-		while (cursor.hasNext()) {
-			BlogInfoWithPub b = new BlogInfoWithPub();
-			DBObject o = cursor.next();
-			b.setBlogId(Long.parseLong((String)o.get(ID_FIELD)));
-			b.setUId(Long.parseLong((String)o.get(UID_FIELD)));
-			b.setPublishTime(Long.parseLong((String)o.get(PTIME_FIELD)));
-			arr.append(b);
+		DBCursor cursor = collection.find(searchQuery); 
+		try {
+			while (cursor.hasNext()) {
+				BlogInfoWithPub b = new BlogInfoWithPub();
+				DBObject o = cursor.next();
+				b.setBlogId(Long.parseLong((String)o.get(ID_FIELD)));
+				b.setUId(Long.parseLong((String)o.get(UID_FIELD)));
+				b.setPublishTime(Long.parseLong((String)o.get(PTIME_FIELD)));
+				arr.append(b);
+			}
+			cursor.close();
+			return arr;
+		} finally {
+			cursor.close();
 		}
-		cursor.close();
-		return arr;
 	}
 
 	@Override
