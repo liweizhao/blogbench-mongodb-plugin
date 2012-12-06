@@ -107,7 +107,6 @@ public class MongoDbBlogDao implements BlogDAO {
 				Long id = Long.parseLong((String)cursor.next().get(ID_FIELD));
 				list.add(id);
 			}
-			cursor.close();
 			return list;
 		} finally {
 			cursor.close();
@@ -157,7 +156,6 @@ public class MongoDbBlogDao implements BlogDAO {
 				b.setPublishTime(Long.parseLong((String)o.get(PTIME_FIELD)));
 				arr.append(b);
 			}
-			cursor.close();
 			return arr;
 		} finally {
 			cursor.close();
