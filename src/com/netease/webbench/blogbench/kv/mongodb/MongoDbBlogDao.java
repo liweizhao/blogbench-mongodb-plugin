@@ -60,14 +60,14 @@ public class MongoDbBlogDao implements BlogDAO {
 	
 	private Blog obj2Blog(DBObject obj) {
 		Blog blog = new Blog();		
-		blog.setId(Long.parseLong((String)obj.get(ID_FIELD)));
-		blog.setUid(Long.parseLong((String)obj.get(UID_FIELD)));
+		blog.setId(Long.parseLong(obj.get(ID_FIELD).toString()));
+		blog.setUid(Long.parseLong(obj.get(UID_FIELD).toString()));
 		blog.setTitle((String)obj.get(TITLE_FIELD));
 		blog.setAbs((String)obj.get(ABS_FIELD));
-		blog.setAllowView(Integer.parseInt((String)obj.get(ALLOWVIEW_FIELD)));
-		blog.setPublishTime(Long.parseLong((String)obj.get(PTIME_FIELD)));
-		blog.setAccessCount(Integer.parseInt((String)obj.get(ACCESS_FIELD)));
-		blog.setCommentCount(Integer.parseInt((String)obj.get(COMMENT_FIELD)));
+		blog.setAllowView(Integer.parseInt(obj.get(ALLOWVIEW_FIELD).toString()));
+		blog.setPublishTime(Long.parseLong(obj.get(PTIME_FIELD).toString()));
+		blog.setAccessCount(Integer.parseInt(obj.get(ACCESS_FIELD).toString()));
+		blog.setCommentCount(Integer.parseInt(obj.get(COMMENT_FIELD).toString()));
 		blog.setCnt((String)obj.get(CONTENT_FIELD));
 		return blog;
 	}
@@ -104,7 +104,7 @@ public class MongoDbBlogDao implements BlogDAO {
 		try {
 			List<Long> list = new ArrayList<Long>();
 			while (cursor.hasNext()) {
-				Long id = Long.parseLong((String)cursor.next().get(ID_FIELD));
+				Long id = Long.parseLong(cursor.next().get(ID_FIELD).toString());
 				list.add(id);
 			}
 			return list;
@@ -124,8 +124,8 @@ public class MongoDbBlogDao implements BlogDAO {
 		try {
 			if (cursor.hasNext()) {
 				DBObject o = cursor.next();
-				long id = Long.parseLong((String)o.get(ID_FIELD));
-				String title = (String)o.get(TITLE_FIELD);
+				long id = Long.parseLong(o.get(ID_FIELD).toString());
+				String title = o.get(TITLE_FIELD).toString();
 				return new BlogIdWithTitle(id, uId, title);
 			}		
 			return null;
@@ -144,16 +144,15 @@ public class MongoDbBlogDao implements BlogDAO {
 	public DynamicArray<BlogInfoWithPub> selAllBlogIds() throws Exception {
 		DynamicArray<BlogInfoWithPub> arr = new DynamicArray<BlogInfoWithPub>(
 				selBlogNums());
-		BasicDBObject searchQuery = new BasicDBObject();
-		searchQuery.put(ID_FIELD, "*");
-		DBCursor cursor = collection.find(searchQuery); 
+		DBCursor cursor = collection.find();
+		System.out.println(collection.count());
 		try {
 			while (cursor.hasNext()) {
 				BlogInfoWithPub b = new BlogInfoWithPub();
 				DBObject o = cursor.next();
-				b.setBlogId(Long.parseLong((String)o.get(ID_FIELD)));
-				b.setUId(Long.parseLong((String)o.get(UID_FIELD)));
-				b.setPublishTime(Long.parseLong((String)o.get(PTIME_FIELD)));
+				b.setBlogId(Long.parseLong(o.get(ID_FIELD).toString()));
+				b.setUId(Long.parseLong(o.get(UID_FIELD).toString()));
+				b.setPublishTime(Long.parseLong(o.get(PTIME_FIELD).toString()));
 				arr.append(b);
 			}
 			return arr;
