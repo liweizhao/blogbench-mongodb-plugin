@@ -31,6 +31,9 @@ import com.netease.webbench.blogbench.model.BlogInfoWithPub;
 import com.netease.webbench.blogbench.model.SiblingPair;
 import com.netease.webbench.common.DynamicArray;
 
+/**
+ * @author LI WEIZHAO
+ */
 public class MongoDbBlogDao implements BlogDAO {
 	public static final String ID_FIELD = "ID";
 	public static final String UID_FIELD = "UserID";

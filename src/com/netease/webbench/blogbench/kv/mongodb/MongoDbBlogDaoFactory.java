@@ -17,6 +17,9 @@ import com.netease.webbench.blogbench.dao.BlogDaoFactory;
 import com.netease.webbench.blogbench.misc.BbTestOptions;
 import com.netease.webbench.common.DbOptions;
 
+/**
+ * @author LI WEIZHAO
+ */
 public class MongoDbBlogDaoFactory implements BlogDaoFactory {
 
 	@Override

@@ -18,6 +18,11 @@ import com.netease.webbench.blogbench.misc.BbTestOptions;
 import com.netease.webbench.blogbench.misc.ParameterGenerator;
 import com.netease.webbench.common.DbOptions;
 
+/**
+ * blogbench plugin for mongodb
+ * 
+ * @author LI WEIZHAO
+ */
 public class BlogbenchMongoDbPlugin implements BlogbenchPlugin {
 	private BlogDaoFactory daoFactory = new MongoDbBlogDaoFactory();
 			

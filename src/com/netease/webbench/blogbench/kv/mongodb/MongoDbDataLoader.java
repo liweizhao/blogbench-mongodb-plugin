@@ -24,6 +24,9 @@ import com.netease.webbench.blogbench.misc.BbTestOptions;
 import com.netease.webbench.blogbench.misc.ParameterGenerator;
 import com.netease.webbench.common.DbOptions;
 
+/**
+ * @author LI WEIZHAO
+ */
 public class MongoDbDataLoader extends SimpleDataLoader {
 	private Mongo mongo = null;
 	private DB db = null;
