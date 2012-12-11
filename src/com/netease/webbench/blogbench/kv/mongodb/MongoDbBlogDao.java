@@ -100,10 +100,11 @@ public class MongoDbBlogDao implements BlogDAO {
 
 	@Override
 	public List<Long> selBlogList(long uId) throws Exception {
-		BasicDBObject searchQuery = new BasicDBObject();
-		searchQuery.put(UID_FIELD, uId);
-		DBCursor cursor = collection.find(searchQuery).sort(
-				new BasicDBObject(PTIME_FIELD, 1)).limit(10);		
+		BasicDBObject query = new BasicDBObject();
+		query.put(UID_FIELD, uId);	
+		query.put(ALLOWVIEW_FIELD, new BasicDBObject("$lte", -100));
+		DBCursor cursor = collection.find(query)
+				.sort(new BasicDBObject(PTIME_FIELD, 1)).limit(10);	
 		try {
 			List<Long> list = new ArrayList<Long>();
 			while (cursor.hasNext()) {
@@ -119,8 +120,8 @@ public class MongoDbBlogDao implements BlogDAO {
 	private BlogIdWithTitle getSibling(long uId, long time, boolean pre) {
 		BasicDBObject searchQuery = new BasicDBObject();
 		searchQuery.put(UID_FIELD, uId);
-		
-		searchQuery.put(PTIME_FIELD, BasicDBObjectBuilder.start(pre ? "gt" : "lt", 
+		searchQuery.put(ALLOWVIEW_FIELD, new BasicDBObject("$lte", -100));
+		searchQuery.put(PTIME_FIELD, BasicDBObjectBuilder.start(pre ? "$gt" : "$lt", 
 				time).get());	
 		DBCursor cursor = collection.find(searchQuery).sort(
 				new BasicDBObject(PTIME_FIELD, 1)).limit(1);
@@ -148,7 +149,6 @@ public class MongoDbBlogDao implements BlogDAO {
 		DynamicArray<BlogInfoWithPub> arr = new DynamicArray<BlogInfoWithPub>(
 				selBlogNums());
 		DBCursor cursor = collection.find();
-		System.out.println(collection.count());
 		try {
 			while (cursor.hasNext()) {
 				BlogInfoWithPub b = new BlogInfoWithPub();
